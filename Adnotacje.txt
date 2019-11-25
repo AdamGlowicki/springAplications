@@ -1,0 +1,62 @@
+REST
+	KLASA
+	@RestController
+	@RequestMapping("/products")  //  nie potrzebuje parametru do metody "@GetMapping("/products")"
+
+	METODY
+	@GetMapping
+    	@GetMapping("/products")
+   	 @RequestMapping(value = "/products", method = RequestMethod.GET)  // do tej metody odwoluja sie wszystkie metody http, mozna ją od razu inicjalizować
+   	 @RequestMapping(method = RequestMethod.GET)  // jeśli mam tu wartosc value a na klasie RequestMapping to adrres = /product/product
+    	public String getProducts(@RequestParam String name,
+                              @RequestParam(required = false, defaultValue = "") String surname) {   // w taki sposob ddaje parametry
+        	return "hello " + name + surname;
+    	}
+
+    	//PATH
+    	@GetMapping("/{name}")                                     // dodaje wartosc po ukosniku np: http://localhost:8080/products/adam
+    	public String getProducts(@PathVariable String name) {
+     	   return "hello " + name;
+   	}
+
+   	 //HEADER
+   	 @GetMapping                                     // dodaje wartosc w postmanie w headerze
+    	public String getProducts(@RequestHeader String name) {
+        	return "hello " + name;
+   	 }
+
+    	//BODY
+   	 @GetMapping
+    	public String getProducts(@RequestBody String name) {
+      	  	return "hello " + name;
+   	 }
+
+    	@PostMapping
+	//   	@PostMapping("/products") // uzywane kiedy nie ma adnotacji na klasie @RequestMapping("/products")
+   	 public String addProducts() {
+        	return "hello world with post";
+    	}
+
+   	 @PutMapping
+	//    @PutMapping("/products")  // uzywane kiedy nie ma adnotacji na klasie @RequestMapping("/products")
+    	public String modifyProducts() {
+        	return "hello world with put";
+    	}
+
+   	 @DeleteMapping
+	//    @DeleteMapping("/products")  // uzywane kiedy nie ma adnotacji na klasie @RequestMapping("/products")
+    	public String remveProducts() {
+        	return "hello world with DELETE";
+    	}
+
+AOP
+	KLASA
+	@Aspect  // umozzliwia uzycie aspektow 
+
+	METODY
+	(@Before, @Around, @After) ("@annotation(HelloAspectAdnot)") // tworze adnotacje np ("@HelloAcceptAdnot"), piszę ją na wykonywanej metodzie ("sayHello()") i wpisauje ją zamiast sciezki w argumencie pomijając znak "@"  
+
+	@Before("execution(String com.example.aop.Hello.sayHello())") // wywołuje się przed metodą "sayHello" podaje typ, sciezke
+	@Around("execution(String com.example.aop.Hello.sayHello())")  // blokuje metode z parametru "sayHallo()" i wprowadza swoją implementację, blokuje @Before,  podaje typ, sciezke
+	private void aroundHello(ProceedingJoinPoint joinPiont) throws Throwable {  //opcjonalnie przekauje w parametrze(ProceedingJoinPoint joinPiont) joinPiont.proceed() wtedy nie jest blokowana metoda "sayHallo()" i metoda z adnotacja "@Before" 
+	@After("execution(String com.example.aop.Hello.sayHello())")  // wykonuje się po metodzie wskazanej w porametrze "sayHello()"
